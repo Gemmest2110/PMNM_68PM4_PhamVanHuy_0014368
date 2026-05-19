@@ -2,30 +2,32 @@
 
 class App
 {
-    protected $controller = 'Home';
+    protected $controller = 'home';
     protected $action = 'index';
     protected $params = [];
 
     public function __construct()
     {
-        $urlProcessed = $this->UrlProcess(); 
+        $urlProcessed = $this->UrlProcess();
 
-        if (isset($urlProcessed[0])) {
-            $controllerName = ucfirst($urlProcessed[0]);
+        if (isset($urlProcessed[0]) && $urlProcessed[0] != '') {
+            $controllerName = strtolower($urlProcessed[0]);
 
-            if (file_exists('../App/Controller/' . $controllerName . '.php')) {
+            if (file_exists('../app/controllers/' . $controllerName . '.php')) {
                 $this->controller = $controllerName;
                 unset($urlProcessed[0]);
             }
         }
 
-        require_once '../App/Controller/' . $this->controller . '.php';
+        require_once '../app/controllers/' . $this->controller . '.php';
 
-        $this->controller = new $this->controller; // tạo đối tượng controller
+        $this->controller = new $this->controller;
 
         if (isset($urlProcessed[1])) {
-            if (method_exists($this->controller, $urlProcessed[1])) {
-                $this->action = $urlProcessed[1];
+            $actionName = $urlProcessed[1];
+
+            if (method_exists($this->controller, $actionName)) {
+                $this->action = $actionName;
                 unset($urlProcessed[1]);
             }
         }
